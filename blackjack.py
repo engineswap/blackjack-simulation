@@ -1,11 +1,9 @@
-from cards import Card, Shoe
+from cards import Shoe
 from map import *
+import csv
 
-roundsToSim = 1000000
+roundsToSim = 100000
 deckCount = 6
-
-
-
 
 def getVal(card):
     return valueMap[card.getId()]
@@ -41,8 +39,6 @@ def shouldPlayerStay(playerHand, dealerUp):
     elif (playerAceNum > 1):
         # EVENTUALLY FIX THIS, PLAYER SHOULD NOT ALWAYS STAY WITH TWO ACES
         # ADD SPLITTING
-        # hailey bixley IS COOL :)
-        # BUT ALSO HOT :)
         return True
     else:
         #consult map
@@ -67,9 +63,6 @@ def shouldDealerStay(cards):
         return True
     return False
 
-                
-
-
 
 if __name__ == '__main__':
 
@@ -80,7 +73,10 @@ if __name__ == '__main__':
     lost = []
     won = []
 
+    csvStr = ""
+
     for i in range(roundsToSim):
+        
         if len(shoe)<((deckCount*52)/2):
             #reshuffle shoe
             shoe = Shoe(deckCount)
@@ -119,13 +115,17 @@ if __name__ == '__main__':
             won.append(i)
             continue
 
-        #STEP FOUR: showdown in town with a gown and a clown
+        #STEP FOUR: showdown 
         if playHandScore(dealerCards)>=playHandScore(playerCards):
             lost.append(i)
         else:
             won.append(i)
-    print("Player won: " + str(round(len(won)/(len(won)+len(lost)),4)*100) + "%")
         
+        print(str(i+1) + "/" + str(roundsToSim) + ", win ratio: " + str(round(len(won)/(len(won)+len(lost)),4)*100))
+        csvStr+=(str(i+1)+","+str(round(len(won)/(len(won)+len(lost)),4)*100)+"\n")
+    
+    with open('/Users/ilyat/Desktop/blackjack-simulator/results.csv', 'w') as file:
+        file.write(csvStr)
 
 
 
